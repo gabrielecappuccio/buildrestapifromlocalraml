@@ -1,0 +1,168 @@
+#%RAML 1.0
+title: RAMLAITest
+version: 2.0.0
+baseUri: http://localhost:8081/api
+mediaType: application/json
+protocols: [HTTP, HTTPS]
+
+# ---------------------------------------------------------------
+# 1. TYPES (Defines the Data Schema/Contract)
+# ---------------------------------------------------------------
+types:
+  Customer:
+    type: object
+    properties:
+      id?: 
+        type: string
+        description: Unique identifier (Auto-generated on creation)
+      firstName: 
+        type: string
+        required: true
+      lastName: 
+        type: string
+        required: true
+      email:
+        type: string
+        pattern: ^.+@.+\..+$ # Regex validation for email
+      accountType:
+        type: string
+        enum: [Personal, Business, VIP] # Restricts values to this list
+      joinedDate?:
+        type: date-only
+  
+  ErrorResponse:
+    properties:
+      code: string
+      message: string
+
+# ---------------------------------------------------------------
+# 2. TRAITS (Reusable fragments like Pagination or Security)
+# ---------------------------------------------------------------
+traits:
+  pageable:
+    queryParameters:
+      page:
+        type: integer
+        default: 1
+        minimum: 1
+      pageSize:
+        type: integer
+        default: 20
+        maximum: 100
+  
+  client-id-required:
+    headers:
+      client_id:
+        type: string
+        required: false
+      client_secret:
+        type: string
+        required: false
+
+# ---------------------------------------------------------------
+# 3. RESOURCES AND METHODS (The Endpoints)
+# ---------------------------------------------------------------
+/customers:
+  description: Operations related to the Customer collection
+  
+  # GET /customers
+  get:
+    description: Retrieve a list of customers
+    is: [pageable, client-id-required] # Applies the traits defined above
+    responses:
+      200:
+        body:
+          application/json:
+            type: Customer[] # Indicates an Array of Customer objects
+            example: |
+              [
+                {
+                  "id": "CUST-001",
+                  "firstName": "John",
+                  "lastName": "Doe",
+                  "email": "john.doe@example.com",
+                  "accountType": "Personal"
+                },
+                {
+                  "id": "CUST-002",
+                  "firstName": "Jane",
+                  "lastName": "Smith",
+                   "email": "jane.smith@example.com",                  
+                  "accountType": "VIP"
+                }
+              ]
+
+  # POST /customers
+  post:
+    description: Create a new customer
+    is: [client-id-required]
+    body:
+      application/json:
+        type: Customer
+        example: 
+          firstName: "Sam"
+          lastName: "Thomas"
+          email: "sam.thomas@example.com"
+          accountType: "Business"
+    responses:
+      201:
+        description: Customer created successfully
+        body:
+          application/json:
+            example: { "message": "Customer created", "id": "CUST-003" }
+      400:
+        body:
+          application/json:
+            type: ErrorResponse
+            example: { "code": "ERR-001", "message": "Invalid email format" }
+
+  # Nested Resource: /customers/{ID}
+  /{ID}:
+    uriParameters:
+      ID:
+        description: The unique ID of the customer
+        type: string
+    
+    # GET /customers/{ID}
+    get:
+      description: Get a single customer by ID
+      is: [client-id-required]
+      responses:
+        200:
+          body:
+            application/json:
+              type: Customer
+              example:
+                id: "CUST-001"
+                firstName: "John"
+                lastName: "Doe"
+                email: "john.doe@example.com"                
+                accountType: "Personal"
+        404:
+          body:
+            application/json:
+              type: ErrorResponse
+              example: { "code": "ERR-404", "message": "Customer not found" }
+    
+    # PUT /customers/{ID}
+    put:
+      description: Update an existing customer
+      is: [client-id-required]
+      body:
+        application/json:
+          type: Customer
+      responses:
+        200:
+          body:
+            application/json:
+              example: { "message": "Customer updated successfully" }
+              
+    # DELETE /customers/{ID}
+    delete:
+      description: Remove a customer
+      is: [client-id-required]
+      responses:
+        200:
+          body:
+            application/json:
+              example: { "message": "Customer deleted successfully" }
