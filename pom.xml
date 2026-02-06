@@ -5,7 +5,7 @@
 <!--<groupId>com.mycompany</groupId>-->
 	<groupId>2d2cd957-aa84-48be-9f60-d7ae176d4ee2</groupId>
 	<artifactId>buildrestapifromlocalraml</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.5</version>
 	<packaging>mule-application</packaging>
 
 	<name>buildrestapifromlocalraml</name>
