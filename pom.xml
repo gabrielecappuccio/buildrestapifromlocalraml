@@ -5,7 +5,7 @@
 <!--<groupId>com.mycompany</groupId>-->
 	<groupId>2d2cd957-aa84-48be-9f60-d7ae176d4ee2</groupId>
 	<artifactId>buildrestapifromlocalraml</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>mule-application</packaging>
 
 	<name>buildrestapifromlocalraml</name>
@@ -112,7 +112,7 @@
 			<url>https://repository.mulesoft.org/releases/</url>
 			<layout>default</layout>
 		</repository>
-		<!--  Part of Nexus Repository -->
+		<!--  Part of Nexus Repository   -->
 		<repository>
 			<id>mulesofPOC-Group-Release</id>
 			<name>Nexus mulesofPOC-Group-Release Repository</name>
@@ -133,4 +133,14 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+<!--
+<distributionManagement>
+	<repository>
+		<id>anypoint-exchange-v3</id>
+		<name>Anypoint Exchange</name>
+		<url>https://maven.anypoint.mulesoft.com/api/v3/organizations/2d2cd957-aa84-48be-9f60-d7ae176d4ee2/maven</url>
+		<layout>default</layout>
+	</repository>
+</distributionManagement>
+-->
 </project>
